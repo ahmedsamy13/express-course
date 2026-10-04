@@ -3,6 +3,29 @@ const fs = require('fs');
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
+
+exports.checkId = (req, res, next, val) => {
+  console.log(`tour id is ${val}`);
+
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
+  if (!tour) {
+    return res.status(404).json({
+      status: 'failed',
+      message: 'invalid id',
+    });
+  }
+  next();
+};
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    res.status(400).json({
+      status: 'failed',
+      message: 'bad request',
+    });
+  }
+  next();
+};
 /// route handels
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
@@ -18,12 +41,6 @@ exports.getTour = (req, res) => {
   console.log(req.params);
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'invaild id',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -38,7 +55,7 @@ exports.createTour = (req, res) => {
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
@@ -52,14 +69,6 @@ exports.createTour = (req, res) => {
   //   res.send('done');
 };
 exports.updateTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'invalid id',
-    });
-  }
   res.status(200).json({
     status: 'success',
     message: 'smsm',
@@ -67,14 +76,6 @@ exports.updateTour = (req, res) => {
   });
 };
 exports.deleteTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'invalid id',
-    });
-  }
   res.status(204).json({
     status: 'success',
     message: 'smsm',
