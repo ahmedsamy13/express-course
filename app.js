@@ -26,7 +26,7 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
-  next(new AppError(`${req.originalUrl} does not exist`), 404);
+  next(new AppError(`${req.originalUrl} does not exist`, 404));
 });
 
 app.use(errorController);
