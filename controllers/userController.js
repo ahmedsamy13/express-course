@@ -1,7 +1,6 @@
 const User = require('../models/userModel');
 const APIFeatures = require('../utils/APIFeatures');
 const catchAsync = require('../utils/catchAsync');
-
 exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find();
 

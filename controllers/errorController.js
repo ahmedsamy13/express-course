@@ -21,12 +21,19 @@ const handleValidationErrorDB = (err) => {
 const handleJSONParseError = () =>
   new AppError('Invalid JSON body. Use valid JSON with ordinary spaces.', 400);
 
+const handleJWTError = (err) => new AppError('invalid token', 401);
+
+const handleJWTExpired = (err) =>
+  new AppError('your token has expired, please log in again', 401);
+
 const handleError = (err) => {
   if (err.name === 'CastError') return handleCastErrorDB(err);
   if (err.code === 11000) return handleDuplicateFieldsDB(err);
   if (err.name === 'ValidationError') return handleValidationErrorDB(err);
   if (err.type === 'entity.parse.failed') return handleJSONParseError();
-  return err;
+  if (err.name === 'JsonWebTokenError') return handleJWTError();
+  if (err.name === 'TokenExpiredError') return handleJWTExpired();
+  return err; // fallback: return original error (e.g. AppError)
 };
 
 const sendErrorDev = (err, res) => {
