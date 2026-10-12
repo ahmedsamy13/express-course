@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'password is required'],
     minLength: [5, 'your password must be at least 3 char'],
     maxLength: [25, 'name password contain less than 26 char'],
+    select: false,
   },
   confirmPassword: {
     type: String,
@@ -43,6 +44,7 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Passwords are not the same!',
     },
+    select: false,
   },
 });
 
@@ -56,6 +58,13 @@ userSchema.pre('save', async function () {
   // Delete confirm pass field so it is not persisted in the database
   this.confirmPassword = undefined;
 });
+
+userSchema.methods.correctPassword = async function (
+  candicatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candicatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

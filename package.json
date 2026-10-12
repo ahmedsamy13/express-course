@@ -20,6 +20,7 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.5",
     "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.4",
     "morgan": "^1.12.1",
     "ndb": "^1.1.5",
